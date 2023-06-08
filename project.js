@@ -60,27 +60,47 @@ const getBet = (balance, lines) => {
 
 const spin = () => {
   const symbols = [];
-
   for (const [symbol, count] of Object.entries(SYMBOLS_COUNT)){
-    console.log(symbol, count);
+    // console.log(symbol, count);
       for (let i = 0; i <count; i++){
         symbols.push(symbol); 
       }
   }
-
-  const reels = [[],[],[]];
-
+  const reels = [];
   for(i = 0; i < COLS; i++){
+    reels.push([]);
     reelSymbols = [...symbols];
-    for (j=0, j < ROWS, j++){
-      const randomIndex = Math.floor(reelSymbols.length * Math.random())
-      const selectedSymbol = reelSymbols[randIndex]
+    for (j=0; j < ROWS; j++){
+      const randomIndex = Math.floor(reelSymbols.length * Math.random()) // selecting a random value
+      const selectedSymbol = reelSymbols[randomIndex] //assinging a var to the random value we selected
+      reels[i].push(selectedSymbol); // taking assinged random val and inserting it into reel
+      reelSymbols.splice(randomIndex, 1); //remove the value we just inserted from the array that held initial values
     }
   }
+
+  return reels;
 }
+
+const transpose = (reels) => { // taking our columns and flipping them with our rows
+ const rows = [];
+ for(i = 0; i <ROWS; i++){
+  rows.push([]);
+  for (j = 0; j < COLS; j ++){
+    rows[i].push(reels[j][i]);
+  }
+ }
+ return rows;
+}
+
 spin();
 
-// let balance = deposit();
-// const numberLines = getNumberOfLines();
-// const bet = getBet(balance, numberLines);
+
+let balance = deposit();
+const numberLines = getNumberOfLines();
+const bet = getBet(balance, numberLines);
+const reels = spin();
+const rows = transpose(reels);
+
 // console.log(depositAmount);
+
+
