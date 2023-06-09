@@ -92,15 +92,65 @@ const transpose = (reels) => { // taking our columns and flipping them with our 
  return rows;
 }
 
-spin();
+const printRows = (rows) => {
+  // iterate through each element in your rows and for each element, take that row and add it to an empty string
+  for(const row of rows){ //here we are going through each transposed row element by element{
+    let rowString = ""; //this empty string is our temp string that will have symbols appended to it (rly important)
+    for (const [i, symbol] of row.entries()){
+      rowString += symbol; 
+      if(i != row.length - 1){// I want to NOT print " | " if we are at the end of the row
+        rowString += " | ";
+        }
+      }
+      console.log(rowString);
+    }
+  }
 
 
-let balance = deposit();
-const numberLines = getNumberOfLines();
-const bet = getBet(balance, numberLines);
-const reels = spin();
-const rows = transpose(reels);
+  const getWinnings = (bet, rows, numberLines) =>{ // Func is used to check if there is a match across each row 
+    let winnings = 0;
+    // start by looping through each lines, then check to see if we have matching values per row. If so, $$$.
 
-// console.log(depositAmount);
+    for(let row = 0; row < numberLines; row++){ // Iterating through each row; now need to check each symbol within a single row
+      const symbols = rows[row];
+
+      for(const symbol of symbols){
+        allSame = true;
+        if(symbol != symbols[0]){
+          allSame = false;
+          break;
+        }
+      }
+      if (allSame){
+        winnings += bet * SYMBOL_VALUES[symbols[0]];
+      }
+
+    }
+    return winnings;
+  }
+
+const playGame = () => {
+  while (true){
+    let balance = deposit();
+    const numberLines = getNumberOfLines();
+    const bet = getBet(balance, numberLines);
+    const reels = spin();
+    const rows = transpose(reels);
+    printRows(rows);
+    const winnings = getWinnings(bet, rows, numberLines);
+    console.log("Damn shorty! You just won $" + winnings);
+   
+    if (balance <= 0){
+      console.log("You ran out of money game over!");
+      break;
+    }
+    const response = prompt("Do you want to play again? (Yes/No)" );
+    if (response != "Yes") break; // I have no idea how to check for either "Yes" or "yes". Tried this and it would only check for Yes not yes.
+  }
+}
+
+playGame()
+
+
 
 
